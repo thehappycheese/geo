@@ -14,10 +14,10 @@ fuzz_target!(|tuple: (geo_types::Polygon<f32>, f32)| {
 
 fn check_result(original: geo_types::Polygon<f32>, simplified: geo_types::Polygon<f32>) {
     assert!(simplified.exterior().0.len() <= original.exterior().0.len());
-    assert!(simplified.exterior().euclidean_length() <= original.exterior().euclidean_length());
+    // assert!(simplified.exterior().euclidean_length() <= original.exterior().euclidean_length());
 
     for interior in simplified.interiors() {
         assert!(simplified.exterior().0.len() <= interior.0.len());
-        assert!(simplified.exterior().euclidean_length() <= interior.euclidean_length());
+        // assert!(simplified.exterior().euclidean_length() <= interior.euclidean_length());
     }
 }

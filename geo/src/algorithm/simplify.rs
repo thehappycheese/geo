@@ -385,4 +385,24 @@ mod test {
         let indices = ls.simplify_idx(&-1.0);
         assert_eq!(vec![0usize, 1, 2, 3, 4], indices);
     }
+
+    #[test]
+    fn nan() {
+        let polygon: Polygon<f32> = Polygon::new(
+            LineString(vec![
+                Coordinate {
+                    x: 0.,
+                    y: f32::NAN,
+                },
+                Coordinate { x: 0.0, y: 0.0 },
+            ]),
+            vec![],
+        );
+
+        println!("orig polygon: {:?}", polygon);
+
+        let simplified = polygon.simplify(&0.);
+
+        assert_eq!(Polygon::new(LineString(vec![]), vec![]), simplified);
+    }
 }

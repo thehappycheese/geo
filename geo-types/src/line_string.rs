@@ -243,8 +243,31 @@ impl<T: CoordNum> LineString<T> {
     /// seems to be no reason to maintain the separate behavior for LineStrings used in
     /// non-LinearRing contexts.
     pub fn is_closed(&self) -> bool {
-        self.0.first() == self.0.last()
+        let first = match self.0.first() {
+            Some(coord) => coord,
+            None => return true,
+        };
+
+        let last = match self.0.last() {
+            Some(coord) => coord,
+            None => return true,
+        };
+
+        if is_finite(first.x) && is_finite(last.x) && is_finite(first.y) && is_finite(last.y) {
+            first == last
+        } else {
+            println!("not finite!");
+            true
+        }
     }
+}
+
+fn is_finite<T: CoordNum>(num: T) -> bool {
+    // NaN
+    num == num &&
+        // Infinity, -Infinity
+        num + T::one() != num
+
 }
 
 /// Turn a `Vec` of `Point`-like objects into a `LineString`.
