@@ -138,10 +138,14 @@ where
             is_proper: false,
         })
     } else {
-        let intersection = proper_intersection(p, q);
+        let intersection = noncollinear_intersection(p, q);
+        let is_proper = intersection != p.start
+            && intersection != p.end
+            && intersection != q.start
+            && intersection != q.end;
         Some(LineIntersection::SinglePoint {
             intersection,
-            is_proper: true,
+            is_proper: is_proper,
         })
     }
 }
@@ -279,7 +283,7 @@ fn raw_line_intersection<F: GeoFloat>(p: Line<F>, q: Line<F>) -> Option<Coordina
 /// ordinate values (in absolute value).  This has the effect of
 /// removing common significant digits from the calculation to
 /// maintain more bits of precision.
-fn proper_intersection<F: GeoFloat>(p: Line<F>, q: Line<F>) -> Coordinate<F> {
+fn noncollinear_intersection<F: GeoFloat>(p: Line<F>, q: Line<F>) -> Coordinate<F> {
     // Computes a segment intersection using homogeneous coordinates.
     // Round-off error can cause the raw computation to fail,
     // (usually due to the segments being approximately parallel).
@@ -337,7 +341,7 @@ mod test {
                 x: 163.81867067,
                 y: -211.31840378,
             },
-            is_proper: true,
+            is_proper: false,
         };
         assert_eq!(actual, Some(expected));
     }
@@ -375,7 +379,7 @@ mod test {
                 x: -215.22279674875,
                 y: -158.65425425385,
             },
-            is_proper: true,
+            is_proper: false,
         };
         assert_eq!(actual, Some(expected));
     }
@@ -452,7 +456,7 @@ mod test {
                 x: 305690.0434123494,
                 y: 254176.46578338774,
             },
-            is_proper: true,
+            is_proper: false,
         };
         assert_eq!(actual, Some(expected));
     }
@@ -597,7 +601,7 @@ mod test {
                 x: 4348440.8493874,
                 y: 5552599.27202212,
             },
-            is_proper: true,
+            is_proper: false,
         };
         assert_eq!(actual, Some(expected));
     }
