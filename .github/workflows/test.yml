@@ -1,4 +1,8 @@
-on: push
+on:
+  push:
+  # run at least weekly to make sure we catch any regression from rust-beta
+  schedule: [cron: "33 22 * * 6"]
+
 name: Run tests
 jobs:
   # The `ci-result` job doesn't actually test anything - it just aggregates the
@@ -133,3 +137,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - run: cargo bench --no-run
+
+  # We want to catch any language level regressions before they hit stable, but
+  # we don't necessarilly want to fail CI if it's a rust bug, so this job isn't
+  # included in the "ci-result" job.
+  rust_toolchain:
+    name: rust toolchain
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rust: [stable, beta]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{matrix.rust}}
+      - run: cargo test --all-features
+
