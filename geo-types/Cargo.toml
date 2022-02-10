@@ -16,7 +16,8 @@ use-rstar_0_9 = ["rstar_0_9", "approx"]
 
 [dependencies]
 approx = { version = "0.4.0", optional = true }
-arbitrary = { version = "1", optional = true }
+# latest arbitrary crate breaks our MSRV
+arbitrary = { version = "1.0.0, <1.1", optional = true }
 num-traits = "0.2"
 serde = { version = "1", optional = true, features = ["derive"] }
 # Prefer `use-rstar` feature rather than enabling rstar directly.
